@@ -1,0 +1,25 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: "3.4"
+
+services:
+  testdb:
+    image: postgres:latest
+    container_name: TestDb
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+    environment:
+      - POSTGRES_DB=TestDb
+      - POSTGRES_USER=test-user
+      - POSTGRES_PASSWORD=test-password
+    restart: always
+
+  test:
+    image: test:latest
+    container_name: EFCore.BulkExtensions.Issue1343
+    restart: always
+    depends_on:
+      - testdb
+    build:
+      context: ./
+      dockerfile: Dockerfile
